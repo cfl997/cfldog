@@ -8,12 +8,15 @@ set(prj_dir ${PROJECT_SOURCE_DIR})
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY				"${prj_dir}/bin64/")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG		"${prj_dir}/bin64/")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE		"${prj_dir}/bin64/")
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY				"${prj_dir}/lib/win64/") #for .lib
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG		"${prj_dir}/lib/win64/") #for .lib
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE		"${prj_dir}/lib/win64/") #for .lib
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY				"${prj_dir}/lib/")
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG		"${prj_dir}/lib/")
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE		"${prj_dir}/lib/")
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY				"${prj_dir}/lib/") #for .lib
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG		"${prj_dir}/lib/") #for .lib
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE		"${prj_dir}/lib/") #for .lib
+ 
 
-
-list(APPEND CMAKE_MODULE_PATH "${XCG_ROOT_DIR}/cmake/")
+list(APPEND CMAKE_MODULE_PATH "${prj_dir}/cmake/")
 
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -31,6 +34,7 @@ SET(CFL_SOURCE_FILES "SourceFiles")
 
 
 add_subdirectory ("Src")
+add_subdirectory ("Test")
 
 #ÎÄ¼þ¼Ð
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)

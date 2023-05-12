@@ -5,10 +5,29 @@
 
 #include "GenerateDog.h"
 
+#define test_AESTime
+
+#ifdef test_AESTime
+//#include "cflTime.hpp"
+#endif // test_AESTime
+
+
 int main(int argc, char* argv[])
 {
 	std::string myString = generate_key();
-	std::cout << myString << std::endl;
+    std::cout << myString << std::endl;
+#ifdef test_AESTime
+    KeyTimeData keyTimeData;
+    keyTimeData.keyTimeType = KeyTimeType::KEYTIME_Week;
+    std::string licensekey = getLicenseByKey(myString, keyTimeData);
+    bool same = isSameLicense(licensekey);
+    if (!same)
+    {
+        std::cout << "error not same , need fixed same()" << std::endl;
+    }
+#endif // test_AESTime
+
+
     if(0)
 	{
         std::ofstream myfile("cflkey.dog");

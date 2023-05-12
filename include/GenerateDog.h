@@ -1,29 +1,40 @@
+#pragma once
 #include <string>
 
 #ifdef WIN32
-
-
-#ifdef GeneralDOG_EXPORTS
-//#define GeneralDOG_API __declspec(dllexport)
-//#else
-//#define GeneralDOG_API __declspec(dllimport)
-#define GeneralDOG_API 
-#endif
+	#ifdef GeneralDOG_EXPORTS
+		//#define GeneralDOG_API __declspec(dllexport)
+	//#else
+		//#define GeneralDOG_API __declspec(dllimport)
+		#define GeneralDOG_API //¾²Ì¬¿â
+	#else
+		#define GeneralDOG_API //¾²Ì¬¿â
+	#endif
 #else// WIN32
-#define GeneralDOG_API
+	#define GeneralDOG_API
 #endif // WIN32
 
-#ifdef GeneralDOG_EXPORTS
+#include "cflTime.hpp"
+
+//#ifdef GeneralDOG_EXPORTS
 GeneralDOG_API std::string generate_key();
 
 GeneralDOG_API std::string getLicenseByKey(const std::string& key);
 
-GeneralDOG_API bool isSame(const std::string& DogData);
+struct KeyTimeData
+{
+	KeyTimeType keyTimeType = KeyTimeType::KEYTIME_NULL;
+	int keytimenum = 1;
+	bool isAdd = true;
+};
+GeneralDOG_API std::string getLicenseByKey(const std::string& key, KeyTimeData keyTimeData);
 
-#else
-std::string generate_key();
+GeneralDOG_API bool isSameLicense(const std::string& licenseKey);
 
-std::string getLicenseByKey(const std::string& key);
-
-bool isSame(const std::string& DogData);
-#endif
+//#else
+//std::string generate_key();
+//
+//std::string getLicenseByKey(const std::string& key);
+//
+//bool isSameLicense(const std::string& DogData);
+//#endif

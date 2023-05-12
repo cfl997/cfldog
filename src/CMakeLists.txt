@@ -25,6 +25,7 @@ SET(COMMON_SOURCE_FILES
 
 SET(COMMON_HEADER_FILES
 	cflMD5.h
+	../include/cflTime.hpp
 	../include/GenerateDog.h
 )
 include_directories(

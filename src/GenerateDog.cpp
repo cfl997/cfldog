@@ -155,7 +155,14 @@ std::string get_cpu_id()
 //	std::cout << "key: " << key << std::endl;
 //	return 0;
 //}
+std::string addMySelfStr(const std::string& cpu_id)
+{
+	std::string salt = std::to_string(cfl_dog);
+	std::string str = cpu_id + salt;
+	return std::move(str);
+}
 
+static int layerKeyNums = 1;
 
 GeneralDOG_API std::string generate_key()
 {
@@ -164,14 +171,25 @@ GeneralDOG_API std::string generate_key()
 		std::cout << "id is empty" << std::endl;
 		return "";
 	}
-	std::string salt = std::to_string(cfl_dog);
-	std::string str = cpu_id + salt;
+	std::string str = addMySelfStr(cpu_id);
+	//std::string salt = std::to_string(cfl_dog);
+	//std::string str = cpu_id + salt;
 	//std::string hashkey = md5(str);
-	std::string hashkey = getAES(str);
+
+	//KeyTimeData keyTimeData;
+	//keyTimeData.keyTimeType = KeyTimeType::KEYTIME_Week;
+
+	//std::string hashkey = getLicenseByKey(str, keyTimeData);
+	for (UINT16 i = 0; i < layerKeyNums; i++)
+	{
+		str = getAES(str);
+	}
+
 	//std::string key = getAES(hash);
 	//std::string key1 = getAES(key);
 	//std::string oldHash= returnAES(key1);
-	return hashkey;
+
+	return std::move(str);
 }
 
 GeneralDOG_API std::string getLicenseByKey(const std::string& key)
@@ -179,18 +197,97 @@ GeneralDOG_API std::string getLicenseByKey(const std::string& key)
 	return getAES(key);
 }
 
-GeneralDOG_API bool isSame(const std::string& DogData)
-{
-	std::string oldHash = returnAES(DogData);
 
+GeneralDOG_API std::string getLicenseByKey(const std::string& key, KeyTimeData keyTimeData)
+{
+	std::string srcKey = key;
+	{
+		//这里先returnaes这个层数和generate_key的层数一致
+		for (UINT16 i = 0; i < layerKeyNums; i++)
+		{
+			srcKey = returnAES(srcKey);
+		}
+	}
+	std::string timeStr = "";
+	if (keyTimeData.keyTimeType != KeyTimeType::KEYTIME_NULL)
+	{
+		KeyTimer keytimer;
+		timeStr = keytimer.getTimeByType(keyTimeData.keyTimeType, keyTimeData.keytimenum, keyTimeData.isAdd);
+	}
+	srcKey += KeyTimerStr;
+
+	if (timeStr != "")
+	{
+		srcKey += HasKeyTimeStr;
+		srcKey += KeyTimeTypeStr + ":" + std::to_string(static_cast<int>(keyTimeData.keyTimeType)) + " ";
+		srcKey += KeyTimeNumStr + ":" + std::to_string(keyTimeData.keytimenum) + " ";
+		srcKey += KeyTimerStr;
+		srcKey += ":";
+	}
+
+	srcKey += timeStr;
+
+	return getLicenseByKey(srcKey);
+}
+
+/*
+* oldkey key值
+* return 根据license的时间类型，往回推导的时间
+*/
+std::string getValidTimeStr(const std::string& oldkey)
+{
+	KeyTimeData keyTimeData;
+	int TimeTyp = getTimeType(oldkey);
+	int TimeNum = getKeyTimeNum(oldkey);
+	//std::string oldTime = getKeyTimer(oldkey);
+
+	keyTimeData.keyTimeType = KeyTimeType(TimeTyp);
+	keyTimeData.keytimenum = TimeNum;
+	keyTimeData.isAdd = false;
+
+	KeyTimer keytimer;
+	std::string timeStr = keytimer.getTimeByType(keyTimeData.keyTimeType, keyTimeData.keytimenum, keyTimeData.isAdd);
+	return timeStr;
+}
+
+
+GeneralDOG_API bool isSameLicense(const std::string& licenseKey)
+{
+	std::string oldLicensekey = returnAES(licenseKey);
+	while (oldLicensekey.find(KeyTimerStr) == std::string::npos)
+	{
+		oldLicensekey = returnAES(oldLicensekey);
+	}
+	bool isTimeValid = true;
+	{
+		//获得之前的key应该是多少
+		//如果比原本的时间小 
+		if (oldLicensekey.find(HasKeyTimeStr) != std::string::npos)
+		{
+			KeyTimer keyTimer;
+			std::string validTime = getValidTimeStr(oldLicensekey);
+			auto  validTime_t = keyTimer.getTime_tByStr(validTime);
+
+			std::string oldTime = getKeyTimer(oldLicensekey);
+			auto  oldTime_t = keyTimer.getTime_tByStr(oldTime);
+
+			isTimeValid = validTime_t <= oldTime_t;
+		}
+	}
 	std::string cpu_id = get_cpu_id();
 	if (cpu_id.empty()) {
 		std::cout << "dog key is error" << std::endl;
 		return false;
 	}
-	std::string salt = std::to_string(cfl_dog);
-	std::string str = cpu_id + salt;
-	std::string hash = md5(str);
 
-	return hash == oldHash;
+	//std::string salt = std::to_string(cfl_dog);
+	//std::string str = cpu_id + salt;
+	std::string str = addMySelfStr(cpu_id);
+	std::string hash = getLicenseByKey(str);
+
+	std::string oldkey = oldLicensekey.substr(0, oldLicensekey.find(KeyTimerStr));
+	std::string oldhash = getLicenseByKey(oldkey);
+
+
+	return hash == oldhash && isTimeValid;
 }

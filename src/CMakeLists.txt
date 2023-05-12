@@ -46,7 +46,8 @@ if (0)
 #    )
 #endif()
 else()
-add_library(${LIB_NAME} SHARED
+#add_library(${LIB_NAME} SHARED
+add_library(${LIB_NAME} STATIC 
 	${COMMON_HEADER_FILES}
 	${COMMON_SOURCE_FILES}
 )

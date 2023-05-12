@@ -11,8 +11,9 @@
 
 #include "cflMD5.h"
 
-#define cfl_dog_20230511 "cfl_dog_20230511"
-#define cfl_dog	cfl_dog_20230511
+#define cfl_dog_20230511	20230511
+#define cfl_dog_20230512	cfl_dog_20230511+1
+#define cfl_dog				cfl_dog_20230512
 
 
 //--------------------------------------CryptoPP------------------------------------------------
@@ -47,10 +48,16 @@ void decryptMessage(const std::string& encodedCipherText, const byte key[], cons
 	StringSource(decodedCipherText, true, new StreamTransformationFilter(decryptor, new StringSink(decryptedText)));
 }
 
+#if  (cfl_dog == cfl_dog_20230511)
 // 128-bit AES key
 byte key[AES::DEFAULT_KEYLENGTH] = { 0x7c, 0x5c, 0xc5, 0x53, 0x0f, 0x61, 0x97, 0xc4, 0x3a, 0x42, 0x5d, 0x5f, 0x5d, 0xcb, 0xcb, 0x98 };
 // 16-byte initialization vector
 byte iv[AES::BLOCKSIZE] = { 0x39, 0x5a, 0x5e, 0x09, 0xa4, 0x11, 0x2f, 0x8e, 0x90, 0x31, 0x8c, 0x42, 0x11, 0xa8, 0xf7, 0x10 };
+#endif // (cfl_dog == cfl_dog_20230511)
+#if  (cfl_dog == cfl_dog_20230512)
+byte key[AES::DEFAULT_KEYLENGTH] = { 0x7c, 0x5c, 0xc5, 0x53, 0x0f, 0x61, 0x97, 0xc4, 0x3a, 0x42, 0x5d, 0x5f, 0x5d, 0xcb, 0xcb, 0x97 };
+byte iv[AES::BLOCKSIZE] = { 0x39, 0x5a, 0x5e, 0x09, 0xa4, 0x11, 0x2f, 0x8e, 0x90, 0x31, 0x8c, 0x42, 0x11, 0xa8, 0xf7, 0x10 };
+#endif // (cfl_dog == cfl_dog_20230511) 
 
 std::string getAES(const std::string& srcSecret)
 {
@@ -122,7 +129,10 @@ std::string get_cpu_id()
 	// Remove whitespace and newline characters from the string
 	cpu_id.erase(std::remove_if(cpu_id.begin(), cpu_id.end(), [](char c) { return std::isspace(c) || c == '\n'; }), cpu_id.end());
 	cpu_id.erase(0, 11);
-	cpu_id.erase(0, 16);
+	if (cpu_id.size() == 32)
+		cpu_id.erase(0, 16);
+	if (cpu_id.size() < 16)
+		std::cout << "id is small 16" << std::endl;
 	return cpu_id;
 
 }
@@ -151,12 +161,13 @@ GeneralDOG_API std::string generate_key()
 {
 	std::string cpu_id = get_cpu_id();
 	if (cpu_id.empty()) {
+		std::cout << "id is empty" << std::endl;
 		return "";
 	}
-	std::string salt = cfl_dog;
+	std::string salt = std::to_string(cfl_dog);
 	std::string str = cpu_id + salt;
-	std::string hashkey = md5(str);
-
+	//std::string hashkey = md5(str);
+	std::string hashkey = getAES(str);
 	//std::string key = getAES(hash);
 	//std::string key1 = getAES(key);
 	//std::string oldHash= returnAES(key1);
@@ -177,7 +188,7 @@ GeneralDOG_API bool isSame(const std::string& DogData)
 		std::cout << "dog key is error" << std::endl;
 		return false;
 	}
-	std::string salt = cfl_dog;
+	std::string salt = std::to_string(cfl_dog);
 	std::string str = cpu_id + salt;
 	std::string hash = md5(str);
 

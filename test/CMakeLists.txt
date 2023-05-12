@@ -7,6 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 SET(LIB_NAME GeneralDogKey)
 
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
+    add_compile_options(/MTd)
+else()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+    add_compile_options(/MT)
+endif()
+
 SET(COMMON_SOURCE_FILES
 	cfldogtest.cpp
 )
@@ -45,6 +53,12 @@ link_directories(
 )
 
 target_link_libraries(${PROJECT_NAME} ${prj_dir}/lib/GeneralCFLDog${CMAKE_DEBUG_POSTFIX}.lib )
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+target_link_libraries(${PROJECT_NAME} ${prj_dir}/lib/Debug/cryptlib.lib )
+else()
+target_link_libraries(${PROJECT_NAME} ${prj_dir}/lib/Release/cryptlib.lib )
+endif()
+
 
 source_group(${CFL_HEADER_FILES} FILES ${COMMON_HEADER_FILES})
 source_group(${CFL_SOURCE_FILES} FILES ${COMMON_SOURCE_FILES})

@@ -1,7 +1,10 @@
 cmake_minimum_required (VERSION 3.8)
 
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+project(cfldogD)
+else()
 project(cfldog)
-
+endif()
 
 set(prj_dir ${PROJECT_SOURCE_DIR})
 

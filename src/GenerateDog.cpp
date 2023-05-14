@@ -162,7 +162,7 @@ std::string addMySelfStr(const std::string& cpu_id)
 	return std::move(str);
 }
 
-static int layerKeyNums = 1;
+static int layerKeyNums = 2;
 
 GeneralDOG_API std::string generate_key()
 {
@@ -180,21 +180,27 @@ GeneralDOG_API std::string generate_key()
 	//keyTimeData.keyTimeType = KeyTimeType::KEYTIME_Week;
 
 	//std::string hashkey = getLicenseByKey(str, keyTimeData);
-	for (UINT16 i = 0; i < layerKeyNums; i++)
-	{
-		str = getAES(str);
-	}
-
+	
+	//for (UINT16 i = 0; i < layerKeyNums; i++)
+	//{
+	//	str = getAES(str);
+	//}
+	
 	//std::string key = getAES(hash);
 	//std::string key1 = getAES(key);
 	//std::string oldHash= returnAES(key1);
 
-	return std::move(str);
+	return getLicenseByKey(str);
 }
 
 GeneralDOG_API std::string getLicenseByKey(const std::string& key)
 {
-	return getAES(key);
+	std::string str = key;
+	for (UINT16 i = 0; i < layerKeyNums; i++)
+	{
+		str = getAES(str);
+	}
+	return std::move(str);
 }
 
 
@@ -250,11 +256,11 @@ std::string getValidTimeStr(const std::string& oldkey)
 	return timeStr;
 }
 
-
+static int flag = 100;
 GeneralDOG_API bool isSameLicense(const std::string& licenseKey)
 {
 	std::string oldLicensekey = returnAES(licenseKey);
-	while (oldLicensekey.find(KeyTimerStr) == std::string::npos)
+	while (oldLicensekey.find(KeyTimerStr) == std::string::npos&& --flag>0)
 	{
 		oldLicensekey = returnAES(oldLicensekey);
 	}

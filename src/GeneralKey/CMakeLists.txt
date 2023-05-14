@@ -1,12 +1,12 @@
 cmake_minimum_required (VERSION 3.8)
 
 #project(GeneralDogKey)
-project(GeneralDogKeyTest)
+project(GeneralDogKey)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-SET(LIB_NAME GeneralDogKeyTest)
+SET(LIB_NAME GeneralDogKey)
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
@@ -17,7 +17,7 @@ else()
 endif()
 
 SET(COMMON_SOURCE_FILES
-	cfldogtest.cpp
+	GeneralKey.cpp
 )
 
 SET(COMMON_HEADER_FILES

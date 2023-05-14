@@ -64,3 +64,7 @@ endif()
 
 source_group(${CFL_HEADER_FILES} FILES ${COMMON_HEADER_FILES})
 source_group(${CFL_SOURCE_FILES} FILES ${COMMON_SOURCE_FILES})
+
+
+add_subdirectory("GeneralKey")
+add_subdirectory("GeneralLicense")

@@ -1,4 +1,4 @@
-# cfldog - Software Encryption Dongle [![License](https://img.shields.io/github/license/cfl997/cfldog)](https://github.com/cfl997/cfldog)
+# cfldog - Software Encryption Dongle [![License](https://img.shields.io/badge/license-Apache2.0-green)](https://github.com/cfl997/cfldog)
 
 cfldog is a software encryption dongle tool that generates unique machine codes, creates license codes, and verifies licenses.
 

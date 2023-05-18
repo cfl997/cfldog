@@ -2,6 +2,8 @@
 
 cfldog is a software encryption dongle tool that generates unique machine codes, creates license codes, and verifies licenses.
 
+[中文说明文档](./README.zh.md)
+
 ## Features
 
 - Generates unique machine codes to identify each machine.

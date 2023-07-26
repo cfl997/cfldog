@@ -61,18 +61,9 @@ byte iv[AES::BLOCKSIZE] = { 0x39, 0x5a, 0x5e, 0x09, 0xa4, 0x11, 0x2f, 0x8e, 0x90
 
 std::string getAES(const std::string& srcSecret)
 {
-
-	//// The plaintext message to be encrypted
-	//std::string plainText = "This is a secret message!";
-
-	//// Print the plaintext message
-	//std::cout << "Plain text: " << plainText << std::endl;
-
 	// Encrypt the message
 	std::string encodedCipherText;
 	encryptMessage(srcSecret, key, iv, encodedCipherText);
-	// Print the encrypted message
-	//std::cout << "Encrypted text: " << encodedCipherText << std::endl;
 	return encodedCipherText;
 
 }
@@ -137,24 +128,7 @@ std::string get_cpu_id()
 
 }
 #endif
-//std::string generate_key()
-//{
-//	std::string cpu_id = get_cpu_id();
-//	if (cpu_id.empty()) {
-//		return "";
-//	}
-//	std::string salt = cfl_dog;
-//	std::string str = cpu_id + salt;
-//	std::string hash = md5(str);
-//	return hash;
-//}
 
-//int main()
-//{
-//	std::string key = generate_key();
-//	std::cout << "key: " << key << std::endl;
-//	return 0;
-//}
 std::string addMySelfStr(const std::string& cpu_id)
 {
 	std::string salt = std::to_string(cfl_dog);
@@ -172,24 +146,6 @@ GeneralDOG_API std::string generate_key()
 		return "";
 	}
 	std::string str = addMySelfStr(cpu_id);
-	//std::string salt = std::to_string(cfl_dog);
-	//std::string str = cpu_id + salt;
-	//std::string hashkey = md5(str);
-
-	//KeyTimeData keyTimeData;
-	//keyTimeData.keyTimeType = KeyTimeType::KEYTIME_Week;
-
-	//std::string hashkey = getLicenseByKey(str, keyTimeData);
-	
-	//for (UINT16 i = 0; i < layerKeyNums; i++)
-	//{
-	//	str = getAES(str);
-	//}
-	
-	//std::string key = getAES(hash);
-	//std::string key1 = getAES(key);
-	//std::string oldHash= returnAES(key1);
-
 	return getLicenseByKey(str);
 }
 
@@ -208,7 +164,7 @@ GeneralDOG_API std::string getLicenseByKey(const std::string& key, KeyTimeData k
 {
 	std::string srcKey = key;
 	{
-		//ÕâÀïÏÈreturnaesÕâ¸ö²ãÊýºÍgenerate_keyµÄ²ãÊýÒ»ÖÂ
+		//è¿™é‡Œå…ˆreturnaesè¿™ä¸ªå±‚æ•°å’Œgenerate_keyçš„å±‚æ•°ä¸€è‡´
 		for (UINT16 i = 0; i < layerKeyNums; i++)
 		{
 			srcKey = returnAES(srcKey);
@@ -237,8 +193,8 @@ GeneralDOG_API std::string getLicenseByKey(const std::string& key, KeyTimeData k
 }
 
 /*
-* oldkey keyÖµ
-* return ¸ù¾ÝlicenseµÄÊ±¼äÀàÐÍ£¬Íù»ØÍÆµ¼µÄÊ±¼ä
+* oldkey keyå€¼
+* return æ ¹æ®licenseçš„æ—¶é—´ç±»åž‹ï¼Œå¾€å›žæŽ¨å¯¼çš„æ—¶é—´
 */
 std::string getValidTimeStr(const std::string& oldkey)
 {
@@ -266,8 +222,8 @@ GeneralDOG_API bool isSameLicense(const std::string& licenseKey)
 	}
 	bool isTimeValid = true;
 	{
-		//»ñµÃÖ®Ç°µÄkeyÓ¦¸ÃÊÇ¶àÉÙ
-		//Èç¹û±ÈÔ­±¾µÄÊ±¼äÐ¡ 
+		//èŽ·å¾—ä¹‹å‰çš„keyåº”è¯¥æ˜¯å¤šå°‘
+		//å¦‚æžœæ¯”åŽŸæœ¬çš„æ—¶é—´å° 
 		if (oldLicensekey.find(HasKeyTimeStr) != std::string::npos)
 		{
 			KeyTimer keyTimer;
@@ -286,8 +242,6 @@ GeneralDOG_API bool isSameLicense(const std::string& licenseKey)
 		return false;
 	}
 
-	//std::string salt = std::to_string(cfl_dog);
-	//std::string str = cpu_id + salt;
 	std::string str = addMySelfStr(cpu_id);
 	std::string hash = getLicenseByKey(str);
 
